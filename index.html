@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Journey 💖</title>
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --light-pink: #ffe5ec;
+            --soft-white: #fffcfc;
+            --accent-dark: #c71585;
+            --pastel-pink: #ffb3c1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-pink), #ffc2d1);
+            color: #4a4a4a;
+            min-height: 100vh;
+            overflow: hidden; /* ล็อกสกรอลล์ระหว่างทำอนิเมชันเปลี่ยนหน้า */
+            position: relative;
+        }
+
+        /* --- หน้าที่ 1: หน้าสติ๊กเกอร์สำหรับกด --- */
+        #screen-intro {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 1s ease-in-out, visibility 1s;
+            background: radial-gradient(circle, #fffcfc 0%, var(--light-pink) 100%);
+        }
+
+        .intro-title {
+            font-size: 1.8em;
+            color: var(--accent-dark);
+            margin-bottom: 60px; /* เพิ่มระยะห่างให้ข้อความอยู่สูงขึ้น */
+            text-align: center;
+            padding: 0 20px;
+            font-weight: bold;
+            animation: pulseText 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* ปุ่มสติ๊กเกอร์หัวใจ */
+        .sticker-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            position: relative;
+            z-index: 15;
+            transition: transform 0.2s;
+            margin-top: 20px; /* เพิ่มระยะห่างด้านบนปุ่ม */
+        }
+
+        .sticker-btn:active {
+            transform: scale(0.9);
+        }
+
+        .heart-sticker {
+            width: 140px;
+            height: 140px;
+            background-color: var(--primary-pink);
+            position: relative;
+            transform: rotate(-45deg);
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+            animation: heartbeat 1.2s infinite;
+            border: 6px solid #fff; /* ขอบสติ๊กเกอร์สีขาว */
+            border-radius: 4px;
+        }
+
+        .heart-sticker::before,
+        .heart-sticker::after {
+            content: "";
+            width: 140px;
+            height: 140px;
+            background-color: var(--primary-pink);
+            border-radius: 50%;
+            position: absolute;
+            border: 6px solid #fff;
+        }
+
+        .heart-sticker::before {
+            top: -70px;
+            left: 0;
+            border-bottom: none;
+            border-right: none;
+        }
+
+        .heart-sticker::after {
+            top: 0;
+            left: 70px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        /* แผ่นมาสก์ปิดขอบสติ๊กเกอร์ด้านในให้เชื่อมกันเนียน ๆ */
+        .sticker-patch {
+            position: absolute;
+            width: 128px;
+            height: 128px;
+            background-color: var(--primary-pink);
+            top: 6px;
+            left: 6px;
+            z-index: 2;
+        }
+
+        .sticker-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            z-index: 5;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: center;
+            width: 100%;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1) rotate(-45deg); }
+            20% { transform: scale(1.1) rotate(-45deg); }
+            40% { transform: scale(1) rotate(-45deg); }
+            60% { transform: scale(1.15) rotate(-45deg); }
+            80%, 100% { transform: scale(1) rotate(-45deg); }
+        }
+
+        /* --- เอฟเฟกต์หัวใจระเบิดตอนกด --- */
+        .burst-heart {
+            position: absolute;
+            color: var(--primary-pink);
+            pointer-events: none;
+            z-index: 20;
+            user-select: none;
+            animation: flyAndFade 1.5s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        @keyframes flyAndFade {
+            0% {
+                transform: translate(-50%, -50%) translate(0, 0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(var(--scale)) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        /* แผ่นสีชมพูวิ่งท่วมจอเพื่อเปลี่ยนฉาก */
+        #flood-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--primary-pink);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out;
+        }
+
+
+        /* --- หน้าที่ 2: หน้าหลักการ์ดครบรอบ --- */
+        #screen-main {
+            opacity: 0;
+            visibility: hidden;
+            width: 100%;
+            min-height: 100vh;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.15);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            transform: translateY(30px);
+            transition: transform 1s ease-out;
+            z-index: 5;
+        }
+
+        .container.show {
+            transform: translateY(0);
+        }
+
+        .main-heart {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: pulseHeart 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        h1 {
+            color: var(--primary-pink);
+            font-size: 2.3em;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* สไตล์กล่องจับเวลาดีไซน์เก๋ */
+        .timer {
+            background: #fff0f3;
+            border: 2px dashed var(--pastel-pink);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 25px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--accent-dark);
+            box-shadow: inset 0 2px 10px rgba(255, 77, 109, 0.05);
+            line-height: 1.5;
+        }
+
+        .timer span {
+            display: inline-block;
+            margin: 0 4px;
+            color: var(--primary-pink);
+            font-size: 1.1em;
+        }
+
+        .footer-text {
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        /* เอฟเฟกต์หัวใจลอยคลอพื้นหลังในหน้าที่ 2 */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.15);
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- เอฟเฟกต์หัวใจเด้งดึ๋งข้างจอหน้าที่ 2 --- */
+        .side-heart {
+            position: absolute;
+            bottom: -50px;
+            pointer-events: none;
+            z-index: 2; /* อยู่หลัง Container แต่เด่นกว่าพื้นหลังนิดหน่อย */
+            user-select: none;
+            animation: bounceSide 4s ease-out forwards;
+        }
+
+        @keyframes bounceSide {
+            0% {
+                transform: translateY(0) scale(0.3);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(var(--bounce-h)) scale(1.2);
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(calc(var(--bounce-h) - 30px)) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- [หน้าแรก] หน้ารอสติ๊กเกอร์ปุ่มกด -->
+    <div id="screen-intro">
+        <div class="intro-title">ลองกดสติ๊กเกอร์หัวใจสิคะ/ครับ 👇</div>
+        <button class="sticker-btn" id="btn-sticker">
+            <div class="heart-sticker">
+                <div class="sticker-patch"></div>
+            </div>
+            <div class="sticker-text">TAP ME 💖</div>
+        </button>
+    </div>
+
+    <!-- แผ่นชมพูเกลี่ยเปลี่ยนหน้าจอ -->
+    <div id="flood-overlay"></div>
+
+    <!-- [หน้าที่สอง] การ์ดบอกรักและนับเวลาครบรอบ -->
+    <div id="screen-main">
+        <div class="container" id="main-container">
+            <div class="main-heart">💖</div>
+            <h1>Happy Anniversary!</h1>
+            <p class="subtitle">สุขสันต์ครบรอบ1เดือนนะคะเบบี๋</p>
+            
+            <!-- ตัวแสดงเวลาที่คบกัน -->
+            <div class="timer" id="love-counter">กำลังโหลดช่วงเวลาแสนพิเศษ...</div>
+            
+            <p class="footer-text">
+                ขอบคุณที่อยู่กับเค้ามานะคะ<br>
+                เป็น1เดือนที่มีค่ามากๆเลยค่ะสำหรับเค้า อาจจะมีไม่เข้าใจกันบ้าง นอยกันบ้าง แต่เค้าจะไม่ทิ้งเบบี๋ไปไหนแน่นอน 🥰<br>
+                อยู่ให้เค้ารักแบบนี้ไปนานๆเลยนะคะะ
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // 🛑 อย่าลืมปรับตั้งค่า "วันที่เริ่มคบกัน" ตรงนี้ล่ะ! 🛑
+        // ----------------------------------------------------
+        // รูปแบบ: (ปี ค.ศ., เดือนที่เริ่มคบ - 1, วัน, ชั่วโมง, นาที, วินาที)
+        // **สำคัญ**: เดือนใน JavaScript จะเริ่มนับจาก 0 (ม.ค. = 0, ก.พ. = 1, มี.ค. = 2, ... ธ.ค. = 11)
+        // ตัวอย่างข้างล่างคือ วันที่ 18 มิถุนายน 2026 เวลา 00:00:00 น.
+        const anniversaryDate = new Date(2026, 5, 18, 0, 0, 0); 
+
+        // ----------------------------------------------------
+        // ส่วนควบคุมการสลับหน้าและอนิเมชันหัวใจพุ่ง
+        // ----------------------------------------------------
+        const btnSticker = document.getElementById('btn-sticker');
+        const screenIntro = document.getElementById('screen-intro');
+        const screenMain = document.getElementById('screen-main');
+        const floodOverlay = document.getElementById('flood-overlay');
+        const mainContainer = document.getElementById('main-container');
+
+        // รายการรูปทรงหัวใจที่จะสุ่มยิงออกมา
+        const heartShapes = ['❤️', '💖', '💝', '💕', '💗', '💓', '💘'];
+
+        btnSticker.addEventListener('click', (e) => {
+            // ดึงพิกัดกึ่งกลางปุ่มสติ๊กเกอร์
+            const rect = btnSticker.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            // 1. ระเบิดหัวใจฝูงใหญ่ออกจากปุ่มทันที 80 ดวง
+            for (let i = 0; i < 80; i++) {
+                createBurstHeart(startX, startY);
+            }
+
+            // 2. ปล่อยหัวใจพุ่งพะลักล้นจอเพิ่มตามมาเป็นระยะสั้น ๆ ให้ความรู้สึกหนาแน่น
+            let floodInterval = setInterval(() => {
+                for (let i = 0; i < 15; i++) {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    createBurstHeart(x, y, true);
+                }
+            }, 100);
+
+            // 3. ปูแผ่นสีชมพูค่อย ๆ ทับหน้าจอหลังจากกดยักษ์ใหญ่พุ่งตัวไปแล้ว
+            setTimeout(() => {
+                floodOverlay.style.visibility = 'visible';
+                floodOverlay.style.opacity = '1';
+            }, 1200);
+
+            // 4. สลับหน้าแรกออก ย้ายหน้าสองเข้ามา และถอนฉากสีชมพูลง
+            setTimeout(() => {
+                clearInterval(floodInterval);
+                screenIntro.style.display = 'none';
+                
+                // สตาร์ทหัวใจลอยในพื้นหลังหน้า 2
+                startFloatingHearts();
+                // สตาร์ทหัวใจเด้งขึ้นมาจากข้างจอหน้า 2 (ไม่บังข้อความตรงกลาง)
+                startSideBouncingHearts();
+                
+                // ดึงการ์ดหน้าหลักขึ้นมา
+                screenMain.style.visibility = 'visible';
+                screenMain.style.opacity = '1';
+                
+                setTimeout(() => {
+                    mainContainer.classList.add('show');
+                }, 100);
+
+                // ค่อย ๆ เลือนสีชมพูออก
+                setTimeout(() => {
+                    floodOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        floodOverlay.style.visibility = 'hidden';
+                    }, 1000);
+                }, 500);
+
+            }, 2500);
+        });
+
+        // ฟังก์ชันในการเจเนอเรตหัวใจพุ่งระเบิด
+        function createBurstHeart(x, y, isFlooding = false) {
+            const heart = document.createElement('div');
+            heart.classList.add('burst-heart');
+            heart.innerText = heartShapes[Math.floor(Math.random() * heartShapes.length)];
+            
+            // สุ่มมุมและระยะพุ่ง
+            const angle = Math.random() * Math.PI * 2;
+            const distance = isFlooding ? (Math.random() * 100 + 50) : (Math.random() * 300 + 80);
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            // สุ่มขนาดและองศาการบิด
+            const scale = Math.random() * 1.5 + 0.8;
+            const rotation = Math.random() * 360;
+
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            heart.style.fontSize = `${Math.random() * 20 + 20}px`;
+            
+            // ใส่ตัวแปรสุ่มเข้าไปใน CSS
+            heart.style.setProperty('--tx', `${tx}px`);
+            heart.style.setProperty('--ty', `${ty}px`);
+            heart.style.setProperty('--scale', scale);
+            heart.style.setProperty('--rot', `${rotation}deg`);
+
+            document.body.appendChild(heart);
+
+            // เคลียร์ทิ้งหลังอนิมเชันจบ
+            setTimeout(() => {
+                heart.remove();
+            }, 1500);
+        }
+
+        // ----------------------------------------------------
+        // ส่วนคำนวณและแสดงผลเวลารักกัน
+        // ----------------------------------------------------
+        function updateTimer() {
+            const now = new Date();
+            const difference = now - anniversaryDate;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('love-counter').innerHTML = 
+                `<span>${days}</span> วัน <span>${hours}</span> ชม. <span>${minutes}</span> นาที <span>${seconds}</span> วิ`;
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // ----------------------------------------------------
+        // ฟังก์ชันสร้างหัวใจลอยเอื่อย ๆ คลอพื้นหลัง (Background) หน้า 2
+        // ----------------------------------------------------
+        function startFloatingHearts() {
+            setInterval(() => {
+                const bgHeart = document.createElement('div');
+                bgHeart.classList.add('bg-heart');
+                bgHeart.innerText = heartShapes[Math.floor(Math.random() * heartShapes.length)];
+                
+                bgHeart.style.left = `${Math.random() * 100}vw`;
+                bgHeart.style.fontSize = `${Math.random() * 20 + 15}px`;
+                bgHeart.style.animationDuration = `${Math.random() * 4 + 4}s`; 
+                
+                document.body.appendChild(bgHeart);
+
+                setTimeout(() => {
+                    bgHeart.remove();
+                }, 8000);
+            }, 500);
+        }
+
+        // ----------------------------------------------------
+        // ฟังก์ชันสร้างหัวใจเด้งดึ๋งขึ้นมาจากฝั่งซ้ายและขวาของจอ (หลีกเลี่ยงตรงกลาง)
+        // ----------------------------------------------------
+        function startSideBouncingHearts() {
+            setInterval(() => {
+                const sideHeart = document.createElement('div');
+                sideHeart.classList.add('side-heart');
+                sideHeart.innerText = heartShapes[Math.floor(Math.random() * heartShapes.length)];
+
+                // เลือกว่าจะเกิดฝั่งซ้าย (0% - 20%) หรือ ฝั่งขวา (80% - 95%) เพื่อไม่ให้บังข้อความตรงกลาง
+                const isLeft = Math.random() > 0.5;
+                const randomX = isLeft ? (Math.random() * 20) : (80 + Math.random() * 15);
+                
+                // สุ่มความสูงที่ต้องการให้หัวใจเด้งขึ้นมา (เช่น ติดลบ 40vh ถึง 80vh จากขอบล่าง)
+                const bounceHeight = `-${Math.random() * 40 + 40}vh`;
+
+                sideHeart.style.left = `${randomX}vw`;
+                sideHeart.style.fontSize = `${Math.random() * 25 + 25}px`; // ขนาดหัวใจใหญ่พอดี ๆ
+                sideHeart.style.setProperty('--bounce-h', bounceHeight);
+
+                document.body.appendChild(sideHeart);
+
+                // ลบออกเมื่ออนิเมชันความยาว 4 วินาทีจบลง
+                setTimeout(() => {
+                    sideHeart.remove();
+                }, 4000);
+            }, 600); // จะสุ่มเด้งขึ้นมาใหม่ทุกๆ 0.6 วินาที
+        }
+    </script>
+</body>
+</html>
